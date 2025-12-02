@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Postuler{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Postuler</h1>
+
+        {{ form_start(form) }}
+
+        {# Afficher les étapes du formulaire #}
+        {{ form_flow_steps(flow) }}
+
+        {{ form_widget(form) }}
+
+        <div>
+            {% if flow.getCurrentStepNumber() > 1 %}
+                <button type="submit" name="{{ flow.getFormTransitionKey() }}" value="back">Précédent</button>
+            {% endif %}
+            <button type="submit">{{ flow.getCurrentStepNumber() < flow.getStepCount() ? 'Suivant' : 'Terminer' }}</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
