@@ -2,34 +2,78 @@
 
 {% block title %}Postuler{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('app.css') }}">
-{% endblock %}
-
 {% block body %}
-    <div class="container">
-        <h1>Postuler</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Postuler - Étape {{ flow.getCurrentStepNumber() }} sur {{ flow.getStepCount() }}</h2>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ (flow.getCurrentStepNumber() / flow.getStepCount()) * 100 }}%;" aria-valuenow="{{ flow.getCurrentStepNumber() }}" aria-valuemin="1" aria-valuemax="{{ flow.getStepCount() }}"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
 
-        {{ form_start(form) }}
+                    {% if form.firstName is defined %}
+                        {{ form_row(form.firstName) }}
+                    {% endif %}
+                    {% if form.lastName is defined %}
+                        {{ form_row(form.lastName) }}
+                    {% endif %}
+                    {% if form.email is defined %}
+                        {{ form_row(form.email) }}
+                    {% endif %}
+                    {% if form.phone is defined %}
+                        {{ form_row(form.phone) }}
+                    {% endif %}
+                    {% if form.hasExperience is defined %}
+                        {{ form_row(form.hasExperience) }}
+                    {% endif %}
+                    
+                    {% if form.experienceDetails is defined %}
+                        {{ form_row(form.experienceDetails) }}
+                    {% endif %}
 
-        {# Afficher les étapes du formulaire #}
-        {% include '@CraueFormFlow/FormFlow/stepList.html.twig' %}
+                    {% if form.isImmediatelyAvailable is defined %}
+                        {{ form_row(form.isImmediatelyAvailable) }}
+                        {{ form_row(form.availabilityDate) }}
+                    {% endif %}
 
-        {{ form_widget(form) }}
+                    {% if form.consentRGPD is defined %}
+                        {{ form_row(form.consentRGPD) }}
+                    {% endif %}
 
-        <div>
-            {% if flow.getCurrentStepNumber() > 1 %}
-                <button type="submit" name="{{ flow.getFormTransitionKey() }}" value="back">Précédent</button>
-            {% endif %}
-            <button type="submit">{{ flow.getCurrentStepNumber() < flow.getStepCount() ? 'Suivant' : 'Terminer' }}</button>
+                    {# ... le début de votre formulaire ... #}
+
+                    <div class="valorant-actions">
+                        {# BOUTON PRÉCÉDENT : N'apparait pas à l'étape 1 #}
+                        {% if flow.getCurrentStepNumber() > 1 %}
+                        <button type="submit"
+                                name="{{ flow.getFormStepBackRequestParameterName() }}"
+                                class="btn-valo btn-secondary"
+                                formnovalidate>
+                            PRÉCÉDENT
+                        </button>
+                        {% endif %}
+
+                        {# BOUTON SUIVANT / VALIDER #}
+                        <button type="submit" class="btn-valo btn-primary">
+                            {% if flow.getCurrentStepNumber() < flow.getStepCount() %}
+                            SUIVANT
+                            {% else %}
+                            CONFIRMER LA MISSION
+                            {% endif %}
+                        </button>
+                    </div>
+                    {# ... fin du formulaire ... #}
+                    
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
-
-        {{ form_end(form) }}
     </div>
-
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
+</div>
 {% endblock %}

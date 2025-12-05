@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CandidatureController extends AbstractController
 {
-    #[Route('/', name: 'app_candidature')]
+    #[Route('/apply', name: 'app_candidature')]
     public function index(Request $request, CandidateApplicationFlow $flow, EntityManagerInterface $entityManager): Response
     {
         $candidate = new Candidate();
@@ -21,7 +21,6 @@ class CandidatureController extends AbstractController
 
         // form of the current step
         $form = $flow->createForm();
-        $form->handleRequest($request);
 
         if ($flow->isValid($form)) {
             $flow->saveCurrentStepData($form);
@@ -31,12 +30,13 @@ class CandidatureController extends AbstractController
                 $form = $flow->createForm();
             } else {
                 // flow finished
+                $candidate->setStatus('submitted');
                 $entityManager->persist($candidate);
                 $entityManager->flush();
 
                 $flow->reset(); // remove step data from the session
 
-                return $this->redirectToRoute('app_candidature_success');
+                return $this->redirectToRoute('app_candidature_success', ['id' => $candidate->getId()]);
             }
         }
 
@@ -46,9 +46,11 @@ class CandidatureController extends AbstractController
         ]);
     }
 
-    #[Route('/success', name: 'app_candidature_success')]
-    public function success(): Response
+    #[Route('/success/{id}', name: 'app_candidature_success')]
+    public function success(Candidate $candidate): Response
     {
-        return $this->render('candidature/success.html.twig');
+        return $this->render('candidature/success.html.twig', [
+            'candidate' => $candidate,
+        ]);
     }
 }

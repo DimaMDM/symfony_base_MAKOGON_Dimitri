@@ -1,6 +1,175 @@
+/* Import d'une police "tech" futuriste depuis Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
+
 /* You can override the default CSS variables here. */
-@import '@craue/form-flow-bundle/css/craue_form_flow.css';
+/* @import '@craue/form-flow-bundle/css/craue_form_flow.css'; */ /* Je commente l'import par défaut pour avoir le contrôle total */
+
+:root {
+    --valo-dark-blue: #0f1923; /* Couleur de fond principale */
+    --valo-red: #ff4655;       /* Couleur d'accentuation principale (Viper/Phoenix) */
+    --valo-cyan: #00f5d4;      /* Couleur d'accentuation secondaire (Jett/Sage) */
+    --valo-text-light: #ece8e1; /* Couleur du texte */
+    --valo-panel-bg: rgba(23, 33, 43, 0.95); /* Fond semi-transparent pour le formulaire */
+}
 
 body {
-    background-color: skyblue;
+    background-color: var(--valo-dark-blue);
+    /* Optionnel : ajoutez une image de fond subtile ici */
+    /* background-image: url('path/to/your/valorant-bg.jpg'); */
+    /* background-size: cover; */
+    /* background-position: center; */
+    color: var(--valo-text-light);
+    font-family: 'Rajdhani', sans-serif; /* Police style "HUD" */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Conteneur principal du formulaire */
+.container {
+    background-color: var(--valo-panel-bg);
+    padding: 2rem 3rem;
+    border-radius: 4px; /* Coins légèrement arrondis mais angulaires */
+    border: 2px solid var(--valo-red); /* Bordure rouge vif */
+    box-shadow: 0 0 20px rgba(255, 70, 85, 0.3); /* Effet de "glow" rouge */
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+}
+
+/* Titres */
+h1, h2, h3 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--valo-red);
+    text-shadow: 0 0 5px rgba(255, 70, 85, 0.5);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 70, 85, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+/* Champs du formulaire (inputs, selects) */
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #334155;
+    color: var(--valo-text-light);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Important pour que le padding ne casse pas la largeur */
+}
+
+/* Effet au focus sur les champs */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--valo-cyan); /* Bordure cyan au focus */
+    box-shadow: 0 0 10px rgba(0, 245, 212, 0.5); /* Glow cyan */
+    background-color: rgba(0, 245, 212, 0.05);
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: #a0a7b3;
+}
+
+/* Style pour la barre de progression des étapes (si CraueFormFlow l'affiche) */
+.craue_form_flow_steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    list-style: none;
+    padding: 0;
+}
+
+.craue_form_flow_steps li {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: #a0a7b3;
+    position: relative;
+}
+
+/* L'étape courante est mise en avant */
+.craue_form_flow_steps li.craue_form_flow_current_step {
+    color: var(--valo-cyan);
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(0, 245, 212, 0.5);
+}
+
+/* Conteneur pour aligner les boutons */
+.valorant-actions {
+    display: flex;
+    gap: 15px; /* Espace entre les boutons */
+    margin-top: 2rem;
+    align-items: center;
+}
+
+/* Style de base commun aux boutons Valorant */
+.btn-valo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none; /* Pour que les liens <a> ressemblent à des boutons */
+    display: inline-block;
+    font-size: 1rem;
+    position: relative;
+}
+
+/* --- BOUTON PRIMAIRE (Rouge - Suivant/Valider) --- */
+.btn-valo.btn-primary {
+    background: linear-gradient(135deg, var(--valo-red) 0%, #d63e4c 100%);
+    color: white;
+    /* Forme angulaire spécifique Valorant */
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+
+.btn-valo.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 70, 85, 0.4);
+    filter: brightness(1.1);
+}
+
+/* --- BOUTON SECONDAIRE (Transparent - Précédent) --- */
+.btn-valo.btn-secondary {
+    background: transparent;
+    color: var(--valo-text-light);
+    border: 1px solid rgba(236, 232, 225, 0.3); /* Bordure subtile */
+    /* Forme rectangulaire simple ou légèrement coupée */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.btn-valo.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05); /* Léger fond blanc au survol */
+    border-color: var(--valo-text-light);
+    transform: translateY(-2px);
+}
+
+/* Corriger le lien violet par défaut s'il en reste */
+a {
+    color: var(--valo-cyan);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+a:hover {
+    color: var(--valo-red);
 }

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CandidatureType extends AbstractType
@@ -29,11 +30,16 @@ class CandidatureType extends AbstractType
                 $builder->add('experienceDetails', TextareaType::class, ['label' => 'Détails de l\'expérience']);
                 break;
             case 3:
-                $builder->add('availabilityDate', DateType::class, [
-                    'label' => 'Date de disponibilité',
-                    'widget' => 'single_text',
-                    'required' => false,
-                ]);
+                $builder
+                    ->add('isImmediatelyAvailable', CheckboxType::class, [
+                        'label' => 'Disponible immédiatement',
+                        'required' => false,
+                    ])
+                    ->add('availabilityDate', DateType::class, [
+                        'label' => 'Date de disponibilité',
+                        'widget' => 'single_text',
+                        'required' => false,
+                    ]);
                 break;
             case 4:
                 $builder->add('consentRGPD', CheckboxType::class, ['label' => 'J\'accepte les conditions RGPD']);
@@ -45,6 +51,9 @@ class CandidatureType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Candidate::class,
+            'validation_groups' => function (Options $options) {
+                return ['Default', 'flow_step_' . $options['flow_step']];
+            },
         ]);
         $resolver->setDefined('flow_step');
     }

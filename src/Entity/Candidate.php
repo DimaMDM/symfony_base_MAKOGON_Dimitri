@@ -5,9 +5,12 @@ namespace App\Entity;
 use App\Repository\CandidateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[Assert\Callback(['App\Entity\Candidate', 'validate'])]
 class Candidate
 {
     #[ORM\Id]
@@ -16,12 +19,16 @@ class Candidate
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
+    #[Assert\Email(message: 'L\'adresse email "{{ value }}" n\'est pas valide.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -33,10 +40,14 @@ class Candidate
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $experienceDetails = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $availabilityDate = null;
 
+    #[ORM\Column]
+    private ?bool $isImmediatelyAvailable = false;
+
     #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['draft', 'submitted'], message: 'Le statut doit être "draft" ou "submitted".')]
     private ?string $status = null;
 
     #[ORM\Column]
@@ -46,6 +57,7 @@ class Candidate
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
+    #[Assert\IsTrue(message: 'Vous devez accepter le consentement RGPD pour soumettre votre candidature.')]
     private ?bool $consentRGPD = null;
 
     public function getId(): ?int
@@ -130,9 +142,21 @@ class Candidate
         return $this->availabilityDate;
     }
 
-    public function setAvailabilityDate(\DateTimeInterface $availabilityDate): static
+    public function setAvailabilityDate(\DateTimeInterface $availabilityDate = null): static
     {
         $this->availabilityDate = $availabilityDate;
+
+        return $this;
+    }
+
+    public function isIsImmediatelyAvailable(): ?bool
+    {
+        return $this->isImmediatelyAvailable;
+    }
+
+    public function setIsImmediatelyAvailable(bool $isImmediatelyAvailable): static
+    {
+        $this->isImmediatelyAvailable = $isImmediatelyAvailable;
 
         return $this;
     }
@@ -182,5 +206,20 @@ class Candidate
         $this->consentRGPD = $consentRGPD;
 
         return $this;
+    }
+
+    public static function validate(object $object, ExecutionContextInterface $context): void
+    {
+        if ($object->isHasExperience() && empty($object->getExperienceDetails())) {
+            $context->buildViolation('Veuillez détailler votre expérience professionnelle.')
+                ->atPath('experienceDetails')
+                ->addViolation();
+        }
+
+        if (!$object->isIsImmediatelyAvailable() && empty($object->getAvailabilityDate())) {
+            $context->buildViolation('Veuillez indiquer une date de disponibilité.')
+                ->atPath('availabilityDate')
+                ->addViolation();
+        }
     }
 }

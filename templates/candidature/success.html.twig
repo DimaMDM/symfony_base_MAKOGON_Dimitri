@@ -1,10 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Candidature envoyée{% endblock %}
+{% block title %}Candidature envoyée !{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>Candidature envoyée avec succès !</h1>
-        <p>Merci pour votre candidature. Nous vous contacterons prochainement.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="card-title">Candidature envoyée avec succès !</h2>
+                </div>
+                <div class="card-body">
+                    <p>Merci, {{ candidate.firstName }}. Votre candidature a bien été enregistrée. Voici un résumé des informations que vous nous avez transmises :</p>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Prénom :</strong> {{ candidate.firstName }}</li>
+                        <li class="list-group-item"><strong>Nom :</strong> {{ candidate.lastName }}</li>
+                        <li class="list-group-item"><strong>Email :</strong> {{ candidate.email }}</li>
+                        {% if candidate.phone %}
+                            <li class="list-group-item"><strong>Téléphone :</strong> {{ candidate.phone }}</li>
+                        {% endif %}
+                        <li class="list-group-item"><strong>Expérience :</strong> {{ candidate.hasExperience ? 'Oui' : 'Non' }}</li>
+                        {% if candidate.hasExperience and candidate.experienceDetails %}
+                            <li class="list-group-item"><strong>Détails de l'expérience :</strong><br>{{ candidate.experienceDetails|nl2br }}</li>
+                        {% endif %}
+                        <li class="list-group-item"><strong>Disponibilité :</strong>
+                            {% if candidate.isImmediatelyAvailable %}
+                                Immédiate
+                            {% elseif candidate.availabilityDate %}
+                                Le {{ candidate.availabilityDate|date('d/m/Y') }}
+                            {% else %}
+                                Non spécifiée
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item"><strong>Consentement RGPD :</strong> {{ candidate.consentRGPD ? 'Accepté' : 'Refusé' }}</li>
+                    </ul>
+
+                    <div class="valorant-actions" style="justify-content: center; margin-top: 30px;">
+                        {# On ajoute la classe btn-valo et btn-primary au lien #}
+                        <a href="{{ path('app_candidature_create') }}" class="btn-valo btn-primary">
+                            DÉPOSER UNE NOUVELLE CANDIDATURE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
