@@ -52,7 +52,8 @@
                         {# BOUTON PRÉCÉDENT : N'apparait pas à l'étape 1 #}
                         {% if flow.getCurrentStepNumber() > 1 %}
                         <button type="submit"
-                                name="{{ flow.getFormStepBackRequestParameterName() }}"
+                                name="{{ flow.getFormTransitionKey() }}"
+                                value="back"
                                 class="btn-valo btn-secondary"
                                 formnovalidate>
                             PRÉCÉDENT
