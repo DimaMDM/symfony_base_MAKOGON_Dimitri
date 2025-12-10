@@ -10,10 +10,10 @@
     pkgs.php82Packages.composer
   ];
 
-  services.mysql = {
+  # Ajoute ce bloc pour lancer Postgres automatiquement
+  services.postgres = {
     enable = true;
-    package = pkgs.mariadb;
-    # package = pkgs.mysql80; # For MySQL 8.0
+    enableTcp = true; # Crucial pour que 127.0.0.1 fonctionne
   };
 
   # Sets environment variables in the workspace
