@@ -2,16 +2,84 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Bienvenue !{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+        
+        {# On ajoute un peu de CSS directement ici pour l'instant #}
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 0;
+                background-color: #1a1b26; /* Couleur sombre style "Code" */
+                color: #a9b1d6;
+            }
+            
+            /* Le style du bandeau (Navbar) */
+            .navbar {
+                background-color: #24283b; /* Un peu plus clair que le fond */
+                padding: 1rem 2rem;
+                display: flex; /* La magie qui met tout sur une ligne */
+                justify-content: space-between; /* Espace max entre gauche et droite */
+                align-items: center;
+                border-bottom: 1px solid #414868;
+                margin-bottom: 2rem;
+            }
+
+            .navbar a {
+                color: #7aa2f7;
+                text-decoration: none;
+                margin-left: 15px;
+                font-weight: bold;
+            }
+
+            .navbar a:hover {
+                color: #bb9af7;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            /* Style basique pour les tables (pour que tes tâches soient jolies aussi) */
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { text-align: left; padding: 10px; border-bottom: 1px solid #414868; }
+            th { color: #bb9af7; }
+        </style>
+
+        {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {# --- DÉBUT DU BANDEAU --- #}
+        <header class="navbar">
+            <div class="nav-left">
+                {# Remplace 'app_home' par le nom de ta route d'accueil si différent #}
+                <a href="/" style="font-size: 1.2em; color: white;">MonProjet Symfony</a>
+                <a href="{{ path('task_index') }}">Mes Tâches</a>
+            </div>
+
+            <div class="nav-right user-info">
+                {% if app.user %}
+                    {# CAS 1 : UTILISATEUR CONNECTÉ #}
+                    <span style="color: white;">👤 {{ app.user.userIdentifier }}</span>
+                    {# Vérifie que ta route de déconnexion s'appelle bien app_logout #}
+                    <a href="{{ path('app_logout') }}" style="color: #f7768e;">Se déconnecter</a>
+                {% else %}
+                    {# CAS 2 : VISITEUR #}
+                    <a href="{{ path('app_login') }}">Se connecter</a>
+                    <a href="{{ path('app_register') }}">S'inscrire</a>
+                {% endif %}
+            </div>
+        </header>
+        {# --- FIN DU BANDEAU --- #}
+
+        <div style="padding: 0 2rem;">
+            {% block body %}{% endblock %}
+        </div>
     </body>
 </html>
